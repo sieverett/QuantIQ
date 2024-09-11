@@ -235,7 +235,7 @@ st.set_page_config(page_title="QUANT-IQ: Quantitative Analysis Tool for Intellig
                     page_icon="cyclone", # "chart_with_upwards_trend",
                    menu_items={
                        'Get Help': 'https://www.weavery.ai',
-                       'Report a bug': "https://github.com/yourusername/yourrepository/issues/new",
+                       'Report a bug': "https://github.com/sieverett/QuantIQ/issues/new",
                        'About': "# This is a header. This is an *extremely* cool app!"
                    }
                    )

@@ -13,7 +13,7 @@
 ## Installation:
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/yourrepository.git
+   git clone https://github.com/sieverett/QuantIQ.git
    cd yourrepository
    ```
 2. Install required dependencies:

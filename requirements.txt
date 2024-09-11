@@ -3,5 +3,5 @@ streamlit
 openai
 PyPDF2
 markdown
-streamlit-pdf-viewer
 markdown-pdf
+pdfkit
