@@ -16,6 +16,6 @@ plugins:
   - jekyll-feed
   - jekyll-seo-tag
 
-# Ensure the FAQ.md in /doc is processed
+# Ensure the FAQ.md in /docs is processed
 include:
-  - doc/FAQ.md
+  - docs/FAQ.md
