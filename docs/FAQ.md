@@ -1,4 +1,4 @@
-```markdown
+
 ![QuantIQ Logo](imgs/quantiq_logo_75x75.jpg)
 
 # QUANT-IQ Help Guide
@@ -97,6 +97,3 @@ We strive to comply with relevant privacy regulations, including:
 By using the QUANT-IQ application, you agree to the terms of the privacy policy and understand how your data is processed.
 
 For any further questions or concerns regarding privacy and data protection, please reach out via our [GitHub Issues page](https://github.com/yourusername/yourrepository/issues/new).
-```
-
-This expanded section includes a detailed explanation of how **QUANT-IQ** handles data, OpenAI's privacy policy, and some tips on protecting user data. It also mentions compliance with major privacy regulations like GDPR and CCPA, which is important for global users.
