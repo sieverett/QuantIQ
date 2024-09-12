@@ -6,6 +6,7 @@ from markdown_pdf import MarkdownPdf, Section
 import pandas as pd
 import zipfile
 import pdfkit
+import re
 
 
 # Moderation check function
@@ -78,6 +79,7 @@ def markdown_to_pdf(report_text,filename,output_dir):
     pdf.save(save_path)
     print(f"analysis saved as {save_path}")
 
+
 def html_to_pdf(html_content, filename, output_dir):
     save_path=os.path.join(output_dir,filename.replace(".pdf","_quantiq_analysis")+".pdf")
     style="""
@@ -114,10 +116,30 @@ def html_to_pdf(html_content, filename, output_dir):
                 }
             </style>
                 """
-    html_content=html_content.replace("html\n<!DOCTYPE html>\n","").replace("```","")
+    html_content = html_content.split("```")[1]
+    print("parsed: ", html_content)
+    html_content = html_content.replace("html\n<!DOCTYPE html>\n", "")
     logo='<p><img src="file:///C:/Users/silas/Projects/QuantIQ/imgs/quantiq_logo_75x75.svg" alt="Alt text" /></p>'
     html_content=logo+html_content.replace('<html>\n<head>\n', style)
-    pdfkit.from_string(html_content, save_path, options={'enable-local-file-access': ''})
+
+    # Replace with the correct path if running from local
+    if 'linux' in os.sys.platform.lower():
+        path_wkhtmltopdf = '/usr/bin/wkhtmltopdf'
+        config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
+        pdfkit.from_string(html_content, save_path, options={
+            'enable-local-file-access': ''}, configuration=config)
+    else:
+        print(f"Assuming Windows OS == {os.sys.platform}")
+        path_wkhtmltopdf = 'C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe'
+        config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
+        pdfkit.from_string(html_content, save_path, options={
+            'enable-local-file-access': ''}, configuration=config)
+
+
+def config_pdfkit(path_wkhtmltopdf, html_content, save_path):
+    config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
+    pdfkit.from_string(html_content, save_path, options={
+                       'enable-local-file-access': ''}, configuration=config)
 
 def quantiq_analysis(client,filename,input_dir=None):
 
@@ -256,7 +278,7 @@ st.set_page_config(
 st.markdown("""
     <style>
         #MainMenu {visibility: visible}
-        .stDeployButton {display:none;}
+        .stDeployButton {visibility:hidden;}
         #header {visibility: hidden}
         #footer {visibility: hidden}
         #stDecoration {display:none;}
@@ -268,6 +290,8 @@ st.markdown("""
         }
     </style>
 """, unsafe_allow_html=True)
+
+
 
 def initialize_session_state(defaults):
     """
@@ -354,7 +378,7 @@ with st.container():
                     message_content, citations = quantiq_analysis(client,filename,
                                                                           input_dir=st.session_state.bulk_dir)
                     print(message_content,citations)
-                    html_to_pdf(message_content.value+"\n".join(citations),
+                    html_to_pdf(message_content.value,
                                     filename=filename,
                                     output_dir=st.session_state.bulk_output_dir)
                     oai_file_mgr(client, show = False, delete_vsf = False, delete_vss = True, delete_files = True)
@@ -367,7 +391,7 @@ with st.container():
             st.session_state["files"] = []
             st.session_state.reset_clicked = False
 
-    col1,col2=st.columns([6,1])
+    col1, col2 = st.columns([3, 1])
 
     with col1:
         if not st.session_state.reset_clicked and len(os.listdir(st.session_state.bulk_dir)) > 0:
