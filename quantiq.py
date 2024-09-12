@@ -229,16 +229,27 @@ def feedback():
     if selected is not None:
         st.markdown(f"You selected: {sentiment_mapping[selected]}")   
 
+
 # Set page config
-st.set_page_config(page_title="QUANT-IQ: Quantitative Analysis Tool for Intelligent Financial Review", 
-                   layout="centered",
-                    page_icon="cyclone", # "chart_with_upwards_trend",
-                   menu_items={
-                       'Get Help': 'https://sieverett.github.io/QuantIQ/',
-                       'Report a bug': "https://github.com/sieverett/QuantIQ/issues/new",
-                       'About': "# This is a header. This is an *extremely* cool app!"
-                   }
-                   )
+st.set_page_config(
+    page_title="QUANT-IQ: Quantitative Analysis Tool for Intelligent Financial Review",
+    layout="centered",
+    page_icon="cyclone",
+    menu_items={
+        'Get Help': 'https://sieverett.github.io/QuantIQ/FAQ.html',
+        'Report a bug': 'https://github.com/sieverett/QuantIQ/issues/new',
+        'About': """
+            ## About QUANT-IQ  
+            **QUANT-IQ** is a powerful tool designed to streamline the analysis of financial statements using AI. 
+            With a user-friendly interface, the app supports document uploads in PDF, DOCX, and ZIP formats, and 
+            leverages OpenAI's GPT to generate insightful reports. Whether for individual documents or bulk processing, 
+            QUANT-IQ simplifies financial analysis for both professionals and organizations.
+            
+            **Author**: Silas Everett  
+            **GitHub**: [sieverett.github.io](https://sieverett.github.io)
+        """
+    }
+)
 
 
 # Apply custom CSS

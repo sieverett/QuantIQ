@@ -1,3 +1,37 @@
-title: "QUANT-IQ Help Guide"
-description: "A guide for using QUANT-IQ."
-theme: jekyll-theme-slate # You can choose other GitHub-supported themes as well
+# Site settings
+title: QUANT-IQ Help Guide
+description: Documentation for the QUANT-IQ financial analysis tool.
+baseurl: "/QuantIQ" # Change this to the name of your repository if it's not a user/organization site.
+url: "https://sieverett.github.io" # Your GitHub Pages URL
+author: Silas Everett
+
+# Jekyll theme (you can choose from GitHub's supported themes)
+theme: jekyll-theme-slate
+
+# Custom settings
+permalink: /:title/
+markdown: kramdown
+highlighter: rouge
+
+# Plugins (GitHub Pages auto-loads these, no need to install)
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+# Build settings
+exclude:
+  - README.md
+
+# Optional: If you want a custom navigation bar
+nav:
+  - text: "Home"
+    url: "/"
+  - text: "FAQ"
+    url: "/FAQ.html"
+  - text: "GitHub"
+    url: "https://github.com/sieverett/QuantIQ"
+
+# Social links (optional)
+social_links:
+  - name: GitHub
+    url: "https://github.com/sieverett"
