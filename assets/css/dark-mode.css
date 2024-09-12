@@ -1,0 +1,19 @@
+body {
+    background-color: #1c1c1c;
+    color: #e0e0e0;
+}
+
+a {
+    color: #bb86fc;
+}
+
+h1,
+h2,
+h3 {
+    color: #ffffff;
+}
+
+.navbar,
+.footer {
+    background-color: #282828;
+}
