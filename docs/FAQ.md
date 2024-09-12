@@ -2,7 +2,7 @@
 ![QuantIQ Logo](quantiq_logo_75x75.jpg)
 # QUANT-IQ Help Guide
 
-## Common Issues and Troubleshooting
+## Common Issues and Troubleshooting Tips
 
 ### 1. Issue: "API key not found"
 **Solution**: Ensure you have set your OpenAI API key in the `.env` file:
