@@ -1,6 +1,7 @@
 
 ![QuantIQ Logo](../imgs/quantiq_logo_75x75.jpg)
 
+![QuantIQ Logo](quantiq_logo_75x75.jpg)
 # QUANT-IQ Help Guide
 
 ## Common Issues and Troubleshooting
