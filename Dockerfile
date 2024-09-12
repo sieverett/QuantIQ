@@ -10,13 +10,12 @@ WORKDIR /app
 
 # Install dependencies for wkhtmltopdf
 RUN apt-get update && apt-get install -y \
+    wkhtmltopdf \
     libgl1-mesa-glx \
     libglib2.0-0 \
     wget \
     xfonts-base \
     xfonts-75dpi 
-
-RUN apt install -y wkhtmltopdf
 
 # Add wkhtmltopdf to the system PATH
 ENV PATH="/usr/bin/wkhtmltopdf:$PATH"
@@ -35,7 +34,7 @@ RUN cp .streamlit/config.toml ~/.streamlit/config.toml
 
 # Install Python dependencies
 RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Expose the Streamlit default port
 EXPOSE 8501
