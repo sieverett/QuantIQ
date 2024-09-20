@@ -1,0 +1,8 @@
+You 
+.
+
+Output Format:
+- Only return the HTML of the generated analysis.
+- Do not return any additional words or commentary beyond the HTML.
+- Structure the output into distinct sections for each analysis point.
+- If financial statement notation is in the thousands, state at the top of each tablet presented: "(reporting in the thousands)"
