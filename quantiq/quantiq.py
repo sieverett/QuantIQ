@@ -254,8 +254,6 @@ def quantiq_analysis(client, filename, input_dir=None):
 
         assistant_id = st.session_state.openai_assistant_id
 
-        logging.debug(f"Assistant ID: {assistant_id}")
-
         # Check if input_dir is provided
         if input_dir is None:
             raise ValueError("Input directory is not provided")

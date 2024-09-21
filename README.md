@@ -32,6 +32,18 @@
    streamlit run app.py
    ```
 
+## Docker
+
+1. In directory with Dockerfile, build image:
+```bash
+docker build -t quantiq-app .
+```
+2. Run docker container:
+```bash
+docker run -d -p 8501:8501 --name quantiq-app-container quantiq-app
+```
+3. Open in browser - `https:localhost:8501`
+
 ## Usage:
 - Upload financial documents (PDF, DOCX, ZIP).
 - Click the **Analyze** button to generate reports.

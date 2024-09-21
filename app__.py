@@ -24,24 +24,6 @@ def initialize_session_state(defaults):
             st.session_state[key] = default_value
 
 
-def store_keys(params, file_path=".streamlit/secrets.toml"):
-    # Open the file in write mode (or append mode, if you want to keep existing values)
-    with open(file_path, "w") as env_file:
-        for key, value in params.items():
-            env_file.write(f'{key}="{value}"\n')
-
-
-def get_assistant():
-    try:
-        client = OpenAI(api_key=st.session_state.openai_api_key)
-        my_assistant = client.beta.assistants.retrieve(
-            st.session_state.openai_assistant_id)
-        st.session_state.authenticated_flag = True
-    except Exception as e:
-        st.warning("Set your API key and Assistant ID.")
-        st.session_state.authenticated_flag = False
-
-
 # Set page config
 st.set_page_config(
     page_title="QUANT-IQ: Quantitative Analysis Tool for Intelligent Financial Review",
@@ -103,8 +85,7 @@ st.markdown("""
     [data-testid="stSidebar"] .stExpander  {
     border: none;
     box-shadow: none;
-    }       
-
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -121,11 +102,12 @@ defaults = {
     "reset_clicked": False,
     "uploaded_files": [],
     "bulk_output_dir": "bulk_output",
-    "openai_api_key": os.getenv("OPENAI_API_KEY", ""),
-    "openai_assistant_id": os.getenv("OPENAI_ASSISTANT_ID", ""),
-    "authenticated_flag": False,
-    "key_set": True
+    "openai_api_key": "none",
+    "openai_assistant_id": "none"
 }
+
+# "openai_api_key": os.getenv("OPENAI_API_KEY", ""),
+# "openai_assistant_id": os.getenv("OPENAI_ASSISTANT_ID", "")
 
 initialize_session_state(defaults)
 
@@ -134,24 +116,26 @@ os.makedirs(st.session_state.bulk_dir, exist_ok=True)
 os.makedirs(st.session_state.output_dir, exist_ok=True)
 os.makedirs(st.session_state.bulk_output_dir, exist_ok=True)
 
+# Function to reset session state values
 
 with st.sidebar:
 
     st.text("API key \nand Assistant ID")
     # OpenAI API key input logic
+    # if st.session_state.openai_api_key == os.getenv("OPENAI_API_KEY", ""):
     api_key = st.text_input(
         label="Enter your OpenAI API key",
         placeholder="OpenAI API Key",
         type="password",
         help="Go to [OpenAI API key](https://platform.openai.com/api-keys) for platform authentication."
     )
+
     if api_key:
         st.session_state.openai_api_key = api_key
-        st.toast("API key has been set.")
-        st.session_state.key_set = True
+        st.write("API key has been set.")
 
     # OpenAI Assistant key input logic
-
+    # if st.session_state.openai_assistant_id == os.getenv("OPENAI_ASSISTANT_ID", ""):
     assistant_key = st.text_input(
         label="Enter your OpenAI Assistant ID",
         placeholder="OpenAI Assistant ID",
@@ -161,25 +145,22 @@ with st.sidebar:
 
     if assistant_key:
         st.session_state.openai_assistant_id = assistant_key
-        st.toast("Assistant ID has been set.")
-        st.session_state.key_set = True
+        st.write("Assistant ID has been set.")
 
-    # Check if keys are set
-    if st.session_state.key_set:
-        get_assistant()
+    with st.expander('Current Keys', expanded=False):
+        st.write("API key:", '•••••••••••' +
+                 st.session_state.openai_api_key[-4:])
+        st.write("Asst. ID:", '•••••••••••' +
+                 st.session_state.openai_assistant_id[-4:])
 
-    if st.session_state.authenticated_flag:
-        st.write(":old_key: Authorized")
-    else:
-        st.write(":confounded: Not Authorized!")
-
-    # save keys for session
-    if st.session_state.authenticated_flag:
-        if st.button("Store keys", key="add_keys", help="Persist keys for future use.", use_container_width=True):
-            store_keys(params={"OPENAI_API_KEY": st.session_state.openai_api_key,
-                               "OPENAI_ASSISTANT_ID": st.session_state.openai_assistant_id})
-            st.session_state.key_set = False
-            st.rerun(scope="app")
+    # Reset button logic for both keys
+    # col1, col2 = st.columns([2, 1])
+    # with col1:
+    #     if st.button("Key Reset", key="reset_keys"):
+    #         st.session_state.openai_api_key = os.getenv("OPENAI_API_KEY", "")
+    #         st.session_state.openai_assistant_id = os.getenv(
+    #             "OPENAI_ASSISTANT_ID", "")
+    #         st.rerun()
 # Title
 col1, col2 = st.columns([2, 20], gap="small")
 
@@ -189,6 +170,7 @@ with col1:
                           "quantiq_logo_75x75.jpg"))
 with col2:
     st.title("QUANT-IQ")
+
 
 tab1, tab2 = st.tabs(["Analyzer", "Prompt Editor"])
 
@@ -208,10 +190,6 @@ with tab1:
                 help="Start by uploading your financial documents in ZIP, PDF, or DOCX format."
             )
 
-            if st.session_state.authenticated_flag == False:
-                st.warning(
-                    "Please enter your OpenAI API key and Assistant ID in the sidebar.")
-                st.stop()
             # Process the uploaded files
             if st.session_state["files"]:
                 for uploaded_file in st.session_state["files"]:
@@ -258,19 +236,21 @@ with tab1:
                     st.session_state.bulk_dir) if ".pdf" in f or ".docx" in f]
                 num_files = len(files_to_process)
 
+                client = OpenAI(api_key=st.session_state.openai_api_key)
+
                 with st.spinner("Analyzing..."):
-                    client = OpenAI(
-                        api_key=st.session_state.openai_api_key)
                     for idx, filename in enumerate(files_to_process):
                         idx += 1
                         my_bar.progress(idx / num_files,
                                         text=progress_text + filename)
                         logging.info(
                             f"Analyzing file {filename} ({idx}/{num_files})")
+
                         start_time = time.time()  # Capture start time
                         # Perform the analysis
                         message_content, citations = qiq.quantiq_analysis(
                             client, filename, input_dir=st.session_state.bulk_dir)
+
                         end_time = time.time()  # Capture end time
                         elapsed_time = end_time - start_time
                         # Log the results
@@ -283,6 +263,7 @@ with tab1:
                                         output_dir=st.session_state.bulk_output_dir)
                         qiq.oai_file_mgr(
                             client, show=False, delete_vsf=False, delete_vss=True, delete_files=True)
+
                     logging.info("Analysis completed for all files.")
                 st.success('Done!')
 
@@ -317,23 +298,17 @@ with tab2:
     #     "Edit the default prompt for the AI assistant.\nClick 'Save Edits' to update the AI Assistant.")
 
     def get_current_prompt(method=None):
-        try:
-            client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-            my_assistant = client.beta.assistants.retrieve(
-                os.getenv("OPENAI_ASSISTANT_ID"))
-            with open('prompts/current.txt', 'w') as file:
-                file.write(my_assistant.instructions)
-            if method == 'output format only':
-                return my_assistant.instructions[-335:]
-            elif method == 'less output format':
-                return my_assistant.instructions[:-335]
-            else:
-                return my_assistant.instructions
-        except Exception as e:
-            logging.error(f"Error getting current prompt: {e}")
-            st.error(
-                "Error getting current prompt. Please check your OpenAI API key and Assistant ID.")
-            return 'Error'
+        client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        my_assistant = client.beta.assistants.retrieve(
+            os.getenv("OPENAI_ASSISTANT_ID"))
+        with open('prompts/current.txt', 'w') as file:
+            file.write(my_assistant.instructions)
+        if method == 'output format only':
+            return my_assistant.instructions[-335:]
+        elif method == 'less output format':
+            return my_assistant.instructions[:-335]
+        else:
+            return my_assistant.instructions
 
     def get_default_prompt(method=None):
         with open('prompts/backup.txt', 'r') as file:
@@ -352,58 +327,64 @@ with tab2:
             instructions=instructions
         )
         update_success.toast("Assistant updated successfully!")
+    with st.container():
+        # Initialize session state to hold the editor content and the saved version
+        if 'editor_content' not in st.session_state:
+            st.session_state.editor_content = get_current_prompt(
+                'less output format')
 
-    # Initialize session state to hold the editor content and the saved version
-    if 'editor_content' not in st.session_state:
-        st.session_state.editor_content = get_current_prompt(
-            'less output format')
-    if 'saved_content' not in st.session_state:
-        st.session_state.saved_content = get_current_prompt(
-            'less output format')
+        if 'saved_content' not in st.session_state:
+            st.session_state.saved_content = get_current_prompt(
+                'less output format')
 
-    with st.expander("Edit prompt", expanded=False):
-        # Quill editor that allows the user to edit the content
-        st.session_state.editor_content = st_quill(toolbar=[['bold', 'italic', 'underline'],
-                                                            ['link', 'blockquote',
-                                                             'code-block']],
-                                                   value=st.session_state.editor_content, key="quill")
-    col1, col2, col3, buffer = st.columns([2, 3, 5, 12])
-    update_success = st.empty()
-    with col1:
-        # Button to save the edited content
-        if st.button("Store", help="Save prompt for future use."):
-            st.session_state.saved_content = st.session_state.editor_content
-            epoch_time = int(time.time())
-            file_name = f"quantiq_prompt_{epoch_time}.txt"
-            with open(f'prompts/{file_name}', 'w') as file:
-                file.write(st.session_state.saved_content)
-            update_assistant(instructions=st.session_state.saved_content +
-                             get_default_prompt('output format only'))
-        #     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-        #     my_updated_assistant = client.beta.assistants.update(
-        #         os.getenv("OPENAI_ASSISTANT_ID"),
-        #         instructions=st.session_state.saved_content +
-        #         get_default_prompt('output format only')
-        #     )
-        # update_success.toast("Assistant updated successfully!")
-    with col2:
-        if st.session_state.saved_content:
-            epoch_time = int(time.time())
-            file_name = f"quantiq_prompt_{epoch_time}.txt"
-            buffer = io.StringIO(st.session_state.saved_content)
-            st.download_button(label="Download",
-                               data=buffer.getvalue(),
-                               file_name=file_name,
-                               mime="text/plain",
-                               help="Download the current prompt.")
-    with col3:
-        # Button to restore the default string
-        if st.button("Restore Default Prompt"):
-            st.session_state.editor_content = get_default_prompt(
-                "less output format")
-            st.toast("Click 'Save Edits' to restore defualt!")
-            update_assistant(st.session_state.editor_content)
-            st.rerun(scope="app")
+        with st.expander("Edit prompt", expanded=True):
+            # Quill editor that allows the user to edit the content
+            st.session_state.editor_content = st_quill(toolbar=[['bold', 'italic', 'underline'],
+                                                                ['link', 'blockquote',
+                                                                    'code-block']],
+                                                       value=st.session_state.editor_content, key="quill_editor")
+
+    if st.initialize_session_state.openai_api_key != "" and st.session_state.openai_assistant_id != "":
+        col1, col2, col3 = st.columns([1, 1, 5])
+
+        update_success = st.empty()
+        with col1:
+            # Button to save the edited content
+            if st.button("Save Edits"):
+                st.session_state.saved_content = st.session_state.editor_content
+                epoch_time = int(time.time())
+                file_name = f"quantiq_prompt_{epoch_time}.txt"
+                with open(f'prompts/{file_name}', 'w') as file:
+                    file.write(st.session_state.saved_content)
+
+                update_assistant(instructions=st.session_state.saved_content +
+                                 get_default_prompt('output format only'))
+            #     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+            #     my_updated_assistant = client.beta.assistants.update(
+            #         os.getenv("OPENAI_ASSISTANT_ID"),
+            #         instructions=st.session_state.saved_content +
+            #         get_default_prompt('output format only')
+            #     )
+            # update_success.toast("Assistant updated successfully!")
+
+        with col2:
+            if st.session_state.saved_content:
+                epoch_time = int(time.time())
+                file_name = f"quantiq_prompt_{epoch_time}.txt"
+                buffer = io.StringIO(st.session_state.saved_content)
+                st.download_button(label="Download",
+                                   data=buffer.getvalue(),
+                                   file_name=file_name,
+                                   mime="text/plain")
+
+        with col3:
+            # Button to restore the default string
+            if st.button("Restore Default Prompt"):
+                st.session_state.editor_content = get_default_prompt(
+                    "less output format")
+                st.toast("Click 'Save Edits' to restore defualt!")
+                update_assistant(st.session_state.editor_content)
+                st.rerun(scope="app")
 
     # with st.expander("Prompt Versions", expanded=True):
     #     selected_prompt = st.radio('Select Prompt Version', index=0, options=[

@@ -114,8 +114,4 @@ Reporting Instructions:
 13. **EPS Forecast**:
     "Based on the financial analysis, forecast the company’s Earnings Per Share (EPS) for the next reporting period. Indicate whether EPS is expected to improve, decline, or remain stable, and explain the factors that may influence the forecast."
 
-14. Provide Clear and Concise Feedback for the Interviewer:
-   - Generate up to 5 focused follow-up questions that the interviewer should ask the company’s management, based on your analysis. 
-    Ensure these questions are:
-    - Direct and focused on specific areas of concern or opportunity.
-     - Aimed at clarifying the company’s strategy or addressing any risks or red flags identified during your analysis
+

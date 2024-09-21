@@ -2,5 +2,6 @@
 base="dark"
 backgroundColor="#4167c7"
 
+
 [server]
 hide_streamlit_branding = true
