@@ -1,11 +1,13 @@
-# ![QuantIQ Logo](imgs/quantiq_logo_75x75.jpg) UANT-IQ
+# ![QuantIQ Logo](imgs/quantiq_logo_75x75.jpg) 
+# QUANT-IQ
 # A Quantitative Analysis Tool for Intelligent Financial Review
 
 ## About:
-**QUANT-IQ** is a powerful tool for analyzing financial statements, using OpenAI GPT API and Streamlit to streamline document processing and generate insightful reports.
+**QUANT-IQ** is a powerful tool for analyzing financial statements, using OpenAI and Streamlit to streamline document processing and generate insightful reports. Quant-IQ is a streamlined tool designed to evaluate companies by analyzing their financial statements and additional data. Utilizing advanced algorithms, Quant-IQ assesses key metrics such as revenue growth, profitability, profit growth, and liquidity to determine a company’s financial health and growth potential. Users can easily upload financial documents and spreadsheets, which Quant-IQ integrates into its evaluation framework. The intuitive interface generates comprehensive reports with summaries, financial snapshots, evidence-based analysis, and a scoring system based on a standardized rubric. Additionally, Quant-IQ creates tailored questions for CEOs to gain deeper insights into their business strategies. By automating the financial review process, Quant-IQ enhances efficiency and ensures consistent, informed decision-making for program administrators.
 
 ## Features:
 - Upload and analyze financial documents (PDF, DOCX, or ZIP files).
+- Prompt editor.
 - Generate detailed reports in PDF format.
 - Automatic moderation check using OpenAI.
 - Zip multiple analysis reports for easy download.
@@ -32,7 +34,7 @@
    streamlit run app.py
    ```
 
-## Docker
+## Run local on Docker
 
 1. In directory with Dockerfile, build image:
 ```bash
@@ -40,9 +42,16 @@ docker build -t quantiq-app .
 ```
 2. Run docker container:
 ```bash
-docker run -d -p 8501:8501 --name quantiq-app-container quantiq-app
+docker run -d -p 8501:8501 --name quantiq-app quantiq-app
 ```
 3. Open in browser - `https:localhost:8501`
+
+## Deploy to Azure
+
+In vscode:
+1. From `images` Push to `registries`
+2. From `registries` create web app
+
 
 ## Usage:
 - Upload financial documents (PDF, DOCX, ZIP).

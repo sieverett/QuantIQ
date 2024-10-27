@@ -1,0 +1,63 @@
+/* styles/custom.css */
+
+.stAppDeployButton {
+    display: none;
+}
+
+#MainMenu {
+    visibility: visible;
+}
+
+#header {
+    visibility: hidden;
+}
+
+#footer {
+    visibility: hidden;
+}
+
+#stDecoration {
+    display: none;
+}
+
+.block-container {
+    padding-top: 3rem;
+    padding-bottom: 2rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
+}
+
+section[data-testid="stSidebar"] {
+    width: 300px !important;
+    /* Set the width to your desired value */
+}
+
+.stTabs [data-baseweb="tab-list"] {
+    gap: 3px;
+}
+
+.stTabs [data-baseweb="tab"] {
+    height: 20px;
+    white-space: pre-wrap;
+    background-color: #1d69b5;
+    border-radius: 6px 6px 2px 2px;
+    gap: 2px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.stTabs [aria-selected="true"] {
+    background-color: #077af2;
+    color: #ffffff;
+}
+
+[data-testid="stSidebar"] .stExpander {
+    border: none;
+    box-shadow: none;
+}
+
+div[data-testid="stFileDropzoneInstructions"]>div>span::after {
+    content: "INSTRUCTIONS_TEXT";
+    visibility: visible;
+    display: block;
+}

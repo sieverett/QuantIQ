@@ -1,46 +1,31 @@
+# app.py
+
 import os
 import streamlit as st
-from openai import OpenAI
-from docx import Document
-from markdown_pdf import MarkdownPdf, Section
-from weasyprint import HTML
-from quantiq import quantiq as qiq
-import time
-import io
-from streamlit_quill import st_quill
+from utils.session import initialize_session_state
+from components.sidebar import render_sidebar
+from components.analyzer import render_analyzer
+from components.prompt_editor import render_prompt_editor
+from components.settings import render_settings
+from quantiq import (
+    set_logging,
+    quantiq_analysis,
+    quantiq_analysis_,
+    output_report,
+    output_report_,
+    download_zip_file,
+    reset_run,
+    feedback,
+)
+from quantiq.logo_manager import render_logo
+from quantiq.download_manager import download_file
+from quantiq import prompt_utils as pu
 
-logging = qiq.set_logging()
+# Import custom modules
+from quantiq.logging_setup import set_logging
 
-
-def initialize_session_state(defaults):
-    """
-    Initialize Streamlit session state variables if they don't already exist.
-
-    Args:
-    defaults (dict): A dictionary of session state variable names and their default values.
-    """
-    for key, default_value in defaults.items():
-        if key not in st.session_state:
-            st.session_state[key] = default_value
-
-
-def store_keys(params, file_path=".streamlit/secrets.toml"):
-    # Open the file in write mode (or append mode, if you want to keep existing values)
-    with open(file_path, "w") as env_file:
-        for key, value in params.items():
-            env_file.write(f'{key}="{value}"\n')
-
-
-def get_assistant():
-    try:
-        client = OpenAI(api_key=st.session_state.openai_api_key)
-        my_assistant = client.beta.assistants.retrieve(
-            st.session_state.openai_assistant_id)
-        st.session_state.authenticated_flag = True
-    except Exception as e:
-        st.warning("Set your API key and Assistant ID.")
-        st.session_state.authenticated_flag = False
-
+# Set logging
+logger = set_logging()
 
 # Set page config
 st.set_page_config(
@@ -65,53 +50,15 @@ st.set_page_config(
 )
 
 # Apply custom CSS
-st.markdown("""
-    <style>
-        .stAppDeployButton {display: none;}
-        #MainMenu {visibility: visible;}
-        #header {visibility: hidden;}
-        #footer {visibility: hidden;}
-        #stDecoration {display:none;}
-        .block-container {
-            padding-top: 3rem;
-            padding-bottom: 2rem;
-            padding-left: 3rem;
-            padding-right: 3rem;
-        }
-        section[data-testid="stSidebar"] {
-            width: 300px !important; # Set the width to your desired value
-        }
-        .stTabs [data-baseweb="tab-list"] {
-		gap: 3px;
-    }
-
-	.stTabs [data-baseweb="tab"] {
-		height: 20px;
-        white-space: pre-wrap;
-		background-color: #1d69b5;
-		border-radius: 6px 6px 2px 2px;
-		gap: 2px;
-		padding-top: 15px;
-		padding-bottom: 15px;
-    }
-
-	.stTabs [aria-selected="true"] {
-  		background-color: #077af2;
-        color:#ffffff;
-	}
-
-    [data-testid="stSidebar"] .stExpander  {
-    border: none;
-    box-shadow: none;
-    }       
-
-    </style>
-""", unsafe_allow_html=True)
-
+if os.path.exists("styles/custom.css"):
+    with open("styles/custom.css") as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+else:
+    logger.warning("Custom CSS file not found at 'styles/custom.css'.")
 
 # Initialize session state variables
 defaults = {
-    "img_dir": 'imgs',
+    "img_dir": "imgs",
     "chat_history": [],
     "bulk_file_uploaded": False,
     "thread_id": None,
@@ -124,294 +71,38 @@ defaults = {
     "openai_api_key": os.getenv("OPENAI_API_KEY", ""),
     "openai_assistant_id": os.getenv("OPENAI_ASSISTANT_ID", ""),
     "authenticated_flag": False,
-    "key_set": True
+    "key_set": True,
+    "editor_content": pu.get_default_prompt(
+        "prompts/default_prompt.txt"
+    ),  # Initialize as empty; will be set in prompt editor
+    "default_prompt": pu.get_default_prompt(
+        "prompts/default_prompt.txt"
+    ),  # Initialize as empty; will be loaded from prompts/default_prompt.txt
+    "assistant_instructions": "",
+    "current_logo": "quantiq_logo_75x75.jpg",
+    "logo_clicked": None,
+    "assistant_mode": "Off",
 }
 
 initialize_session_state(defaults)
 
-# Ensure directories exist
+# Handle query parameters if needed
+if "logo_clicked" not in st.query_params:
+    st.query_params["logo_clicked"] = None
+
+# Ensure necessary directories exist
 os.makedirs(st.session_state.bulk_dir, exist_ok=True)
 os.makedirs(st.session_state.output_dir, exist_ok=True)
 os.makedirs(st.session_state.bulk_output_dir, exist_ok=True)
+os.makedirs(st.session_state.img_dir, exist_ok=True)
 
+# Render Sidebar and get selected menu
+selected = render_sidebar()
 
-with st.sidebar:
-
-    st.text("API key \nand Assistant ID")
-    # OpenAI API key input logic
-    api_key = st.text_input(
-        label="Enter your OpenAI API key",
-        placeholder="OpenAI API Key",
-        type="password",
-        help="Go to [OpenAI API key](https://platform.openai.com/api-keys) for platform authentication."
-    )
-    if api_key:
-        st.session_state.openai_api_key = api_key
-        st.toast("API key has been set.")
-        st.session_state.key_set = True
-
-    # OpenAI Assistant key input logic
-
-    assistant_key = st.text_input(
-        label="Enter your OpenAI Assistant ID",
-        placeholder="OpenAI Assistant ID",
-        type="password",
-        help="Go to [OpenAI Assistant ID](https://platform.openai.com/assistants/) create custom Assistant ID."
-    )
-
-    if assistant_key:
-        st.session_state.openai_assistant_id = assistant_key
-        st.toast("Assistant ID has been set.")
-        st.session_state.key_set = True
-
-    # Check if keys are set
-    if st.session_state.key_set:
-        get_assistant()
-
-    if st.session_state.authenticated_flag:
-        st.write(":old_key: Authorized")
-    else:
-        st.write(":confounded: Not Authorized!")
-
-    # save keys for session
-    if st.session_state.authenticated_flag:
-        if st.button("Store keys", key="add_keys", help="Persist keys for future use.", use_container_width=True):
-            store_keys(params={"OPENAI_API_KEY": st.session_state.openai_api_key,
-                               "OPENAI_ASSISTANT_ID": st.session_state.openai_assistant_id})
-            st.session_state.key_set = False
-            st.rerun(scope="app")
-# Title
-col1, col2 = st.columns([2, 20], gap="small")
-
-# Displaying logo and title
-with col1:
-    st.image(os.path.join(st.session_state.img_dir,
-                          "quantiq_logo_75x75.jpg"))
-with col2:
-    st.title("QUANT-IQ")
-
-tab1, tab2 = st.tabs(["Analyzer", "Prompt Editor"])
-
-with tab1:
-    with st.container():
-
-        st.subheader("Financial Statement Analyzer")
-
-        # UI for file upload
-        file_upload_box = st.empty()
-
-        if not st.session_state["bulk_file_uploaded"]:
-            st.session_state["files"] = file_upload_box.file_uploader(
-                "Upload your documents to begin (.zip, .pdf or .docx)",
-                accept_multiple_files=True,
-                type=["zip", "pdf", "docx"],
-                help="Start by uploading your financial documents in ZIP, PDF, or DOCX format."
-            )
-
-            if st.session_state.authenticated_flag == False:
-                st.warning(
-                    "Please enter your OpenAI API key and Assistant ID in the sidebar.")
-                st.stop()
-            # Process the uploaded files
-            if st.session_state["files"]:
-                for uploaded_file in st.session_state["files"]:
-                    logging.info(f"File uploaded: {uploaded_file.name}")
-
-                    if uploaded_file.type == 'application/x-zip-compressed':
-                        qiq.handle_zipped_files(uploaded_file)
-                        logging.info(
-                            f"Processed zipped file: {uploaded_file.name}")
-                    else:
-                        file_path = qiq.handle_file_upload(
-                            uploaded_file, st.session_state.bulk_dir)
-                        if file_path:
-                            st.success(
-                                f"{uploaded_file.name} uploaded successfully!")
-                            logging.info(
-                                f"File {uploaded_file.name} uploaded successfully.")
-
-                st.session_state["bulk_file_uploaded"] = True
-                st.write("Files uploaded successfully!")
-                st.session_state["reset_clicked"] = False
-                logging.info("All files uploaded and session state updated.")
-                st.rerun()
-
-        if st.session_state["bulk_file_uploaded"] and st.session_state["files"]:
-
-            uploaded_files_ = os.listdir(st.session_state.bulk_dir)
-            bad_files = [
-                f for f in uploaded_files_ if ".pdf" not in f and ".docx" not in f]
-
-            if bad_files:
-                st.error(
-                    f"Only .pdf and .docx files will be analyzed. The following file(s) are not supported: {bad_files}")
-                logging.warning(f"Unsupported files detected: {bad_files}")
-
-            button_label = "Analyze Files" if len(
-                uploaded_files_) > 1 else "Analyze File"
-
-            if st.button(button_label, type="primary"):
-                progress_text = "Analyzing: "
-                my_bar = st.progress(0, text=progress_text)
-
-                files_to_process = [f for f in os.listdir(
-                    st.session_state.bulk_dir) if ".pdf" in f or ".docx" in f]
-                num_files = len(files_to_process)
-
-                with st.spinner("Analyzing..."):
-                    client = OpenAI(
-                        api_key=st.session_state.openai_api_key)
-                    for idx, filename in enumerate(files_to_process):
-                        idx += 1
-                        my_bar.progress(idx / num_files,
-                                        text=progress_text + filename)
-                        logging.info(
-                            f"Analyzing file {filename} ({idx}/{num_files})")
-                        start_time = time.time()  # Capture start time
-                        # Perform the analysis
-                        message_content, citations = qiq.quantiq_analysis(
-                            client, filename, input_dir=st.session_state.bulk_dir)
-                        end_time = time.time()  # Capture end time
-                        elapsed_time = end_time - start_time
-                        # Log the results
-                        logging.info(
-                            f"Elapsed time for {filename}: {elapsed_time:.2f} seconds")
-                        logo = qiq.fetch_logo()
-                        logging.info(f"Logo: {logo}")
-                        logging.info(f"Message content: {message_content}")
-                        qiq.html_to_pdf(message_content.value, filename=filename.replace(".docx", ".pdf"),
-                                        output_dir=st.session_state.bulk_output_dir)
-                        qiq.oai_file_mgr(
-                            client, show=False, delete_vsf=False, delete_vss=True, delete_files=True)
-                    logging.info("Analysis completed for all files.")
-                st.success('Done!')
-
-                if len(os.listdir(st.session_state.bulk_output_dir)) > 0:
-                    qiq.zipdir(
-                        bulk_output_dir=st.session_state.bulk_output_dir)
-                    logging.info("Output files zipped successfully.")
-
-                st.session_state.bulk_file_uploaded = False
-                st.session_state["files"] = []
-                st.session_state.reset_clicked = False
-
-        col1, col2 = st.columns([3, 1])
-
-        with col1:
-            if not st.session_state.reset_clicked and len(os.listdir(st.session_state.bulk_dir)) > 0:
-                if st.button("Reset", type="secondary"):
-                    qiq.reset_run()
-                    logging.info("Run reset and state cleared.")
-                    st.rerun()
-
-        with col2:
-            if os.path.isfile(os.path.join(st.session_state.bulk_output_dir, 'quantiq_results.zip')):
-                qiq.download_zip_file(
-                    bulk_output_dir=st.session_state.bulk_output_dir)
-
-with tab2:
-
-    st.subheader("Prompt Editor",
-                 help="Edit the default prompt for the AI assistant.\nClick 'Save Edits' to update the AI Assistant.")
-    # st.text(
-    #     "Edit the default prompt for the AI assistant.\nClick 'Save Edits' to update the AI Assistant.")
-
-    def get_current_prompt(method=None):
-        try:
-            client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-            my_assistant = client.beta.assistants.retrieve(
-                os.getenv("OPENAI_ASSISTANT_ID"))
-            with open('prompts/current.txt', 'w') as file:
-                file.write(my_assistant.instructions)
-            if method == 'output format only':
-                return my_assistant.instructions[-335:]
-            elif method == 'less output format':
-                return my_assistant.instructions[:-335]
-            else:
-                return my_assistant.instructions
-        except Exception as e:
-            logging.error(f"Error getting current prompt: {e}")
-            st.error(
-                "Error getting current prompt. Please check your OpenAI API key and Assistant ID.")
-            return 'Error'
-
-    def get_default_prompt(method=None):
-        with open('prompts/backup.txt', 'r') as file:
-            instructions = file.read()
-        if method == 'output format only':
-            return instructions[-335:]
-        elif method == 'less output format':
-            return instructions[:-335]
-        else:
-            return instructions
-
-    def update_assistant(instructions):
-        client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-        my_updated_assistant = client.beta.assistants.update(
-            os.getenv("OPENAI_ASSISTANT_ID"),
-            instructions=instructions
-        )
-        update_success.toast("Assistant updated successfully!")
-
-    # Initialize session state to hold the editor content and the saved version
-    if 'editor_content' not in st.session_state:
-        st.session_state.editor_content = get_current_prompt(
-            'less output format')
-    if 'saved_content' not in st.session_state:
-        st.session_state.saved_content = get_current_prompt(
-            'less output format')
-
-    with st.expander("Edit prompt", expanded=False):
-        # Quill editor that allows the user to edit the content
-        st.session_state.editor_content = st_quill(toolbar=[['bold', 'italic', 'underline'],
-                                                            ['link', 'blockquote',
-                                                             'code-block']],
-                                                   value=st.session_state.editor_content, key="quill")
-    col1, col2, col3, buffer = st.columns([2, 3, 5, 12])
-    update_success = st.empty()
-    with col1:
-        # Button to save the edited content
-        if st.button("Store", help="Save prompt for future use."):
-            st.session_state.saved_content = st.session_state.editor_content
-            epoch_time = int(time.time())
-            file_name = f"quantiq_prompt_{epoch_time}.txt"
-            with open(f'prompts/{file_name}', 'w') as file:
-                file.write(st.session_state.saved_content)
-            update_assistant(instructions=st.session_state.saved_content +
-                             get_default_prompt('output format only'))
-        #     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-        #     my_updated_assistant = client.beta.assistants.update(
-        #         os.getenv("OPENAI_ASSISTANT_ID"),
-        #         instructions=st.session_state.saved_content +
-        #         get_default_prompt('output format only')
-        #     )
-        # update_success.toast("Assistant updated successfully!")
-    with col2:
-        if st.session_state.saved_content:
-            epoch_time = int(time.time())
-            file_name = f"quantiq_prompt_{epoch_time}.txt"
-            buffer = io.StringIO(st.session_state.saved_content)
-            st.download_button(label="Download",
-                               data=buffer.getvalue(),
-                               file_name=file_name,
-                               mime="text/plain",
-                               help="Download the current prompt.")
-    with col3:
-        # Button to restore the default string
-        if st.button("Restore Default Prompt"):
-            st.session_state.editor_content = get_default_prompt(
-                "less output format")
-            st.toast("Click 'Save Edits' to restore defualt!")
-            update_assistant(st.session_state.editor_content)
-            st.rerun(scope="app")
-
-    # with st.expander("Prompt Versions", expanded=True):
-    #     selected_prompt = st.radio('Select Prompt Version', index=0, options=[
-    #         None]+sorted(os.listdir('prompts'), reverse=True))
-    #     if selected_prompt != None:
-    #         with open(f'prompts/{selected_prompt}', 'r') as file:
-    #             st.session_state.editor_content = file.read()
-    #             st.write(st.session_state.editor_content)
-    # #         st.write(f"Selected prompt: {selected_prompt}")
-    #         selected_prompt = None
-    #         st.rerun(scope="fragment")
+# Render main content based on selection
+if selected == "Settings":
+    render_settings()
+elif selected == "Analyze":
+    render_analyzer()
+elif selected == "Prompt":
+    render_prompt_editor()

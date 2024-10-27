@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }}</title>
+</head>
+<body>
+<p><small>{{ note }}</small></p>
+<h1>{{ title }}</h1>
+<h2>Summary</h2>
+<p>{{ summary }}</p>
+
+<h2>Evidence</h2>
+<p>{{ evidence }}</p>
+
+<h2>Score</h2>
+<table border="1">
+  <thead>
+    <tr>
+      <th>Criteria</th>
+      <th>Score</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in score_items %}
+    <tr>
+      <td>{{ item.criteria }}</td>
+      <td>{{ item.score }}</td>
+      <td>{{ item.description }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h3>Overall Score: {{ overall_score }}</h3>
+
+<h2>Questions for CEO</h2>
+<ul>
+  {% for question in questions %}
+  <li>{{ question }}</li>
+  {% endfor %}
+</ul>
+
+</body>
+</html>

@@ -1,0 +1,32 @@
+
+{
+  "title": "Financial Analysis Report",
+  "summary": "Over the past three years, XYZ Company has demonstrated consistent revenue growth...",
+  "evidence": "XYZ Company's revenue has grown from $10,000 in Year 1 to $13,000 in Year 2...",
+  "score_items": [
+    {
+      "criteria": "Revenue Growth",
+      "score": "4",
+      "description": "Logical, profitable trends; future revenue even or upward."
+    },
+    {
+      "criteria": "Profit Margins",
+      "score": "4",
+      "description": "Logical, profitable trends; future revenue even or upward."
+    },
+    {
+      "criteria": "Liquidity Position",
+      "score": "5",
+      "description": "Logical, realistic, strong performance; likely to grow in the future."
+    }
+  ],
+  "overall_score": "4.33",
+  "questions": [
+    "What strategies are in place to sustain and accelerate revenue growth over the next five years?",
+    "How does the company plan to maintain or improve profit margins in the face of market competition?",
+    "Can you elaborate on any potential risks that could impact the company's liquidity position?",
+    "What are the main challenges the company anticipates in scaling operations?",
+    "How is the company leveraging technology to enhance operational efficiency and market reach?"
+  ],
+  "note": "All figures are in thousands."
+}
