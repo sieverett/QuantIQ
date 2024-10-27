@@ -135,34 +135,54 @@ You are an expert in reviewing companies that are applying to the SEED Transform
 - Only display the selected score for each category using the following format:
 
 ```html
-Score
-CriteriaScoreDescriptionRevenue Growth4 Logical, profitable trends; future revenue even or upward. Profit Margins3 Even performance; neither strong nor poor. Future trend likely flat or indeterminate. Liquidity Position5 Logical, realistic, strong performance; likely to grow in the future. 
-
+<h2>Score</h2>
+<table border="1">
+  <thead>
+    <tr>
+      <th>Criteria</th>
+      <th>Score</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Revenue Growth</td>
+      <td>4</td> <!-- Example score -->
+      <td>Logical, profitable trends; future revenue even or upward.</td> <!-- Example description -->
+    </tr>
+    <tr>
+      <td>Profit Margins</td>
+      <td>3</td> <!-- Example score -->
+      <td>Even performance; neither strong nor poor. Future trend likely flat or indeterminate.</td> <!-- Example description -->
+    </tr>
+    <tr>
+      <td>Liquidity Position</td>
+      <td>5</td> <!-- Example score -->
+      <td>Logical, realistic, strong performance; likely to grow in the future.</td> <!-- Example description -->
+    </tr>
+  </tbody>
+</table>
 ```
 
 -  Display overall score as average of other scores:
 
 ```html
-Overall Score: [average score]
-
-
+<h3>Overall Score: [average score]</h3>
 ```
 
 ---
 
 **4. Questions for CEO:**
 
-- Present the questions as a bullet list (`
-`):
+- Present the questions as a bullet list (`<ul>`):
 
 ```html
-Questions for CEO
-
-[Question 1]
-[Question 2]
-[Question 3]
-
-
+<h2>Questions for CEO</h2>
+<ul>
+  <li>[Question 1]</li>
+  <li>[Question 2]</li>
+  <li>[Question 3]</li>
+</ul>
 ```
 
 ---
