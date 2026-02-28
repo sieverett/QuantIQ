@@ -1,5 +1,5 @@
 import streamlit as st
-from openai import OpenAI
+from anthropic import Anthropic
 import logging
 
 
@@ -32,7 +32,7 @@ def get_current_prompt(method=None):
     except Exception as e:
         logging.error(f"Error getting current prompt: {e}")
         st.error(
-            "Error getting current prompt. Please check your OpenAI API key and Assistant ID.")
+            "Error getting current prompt. Please check your Anthropic API key.")
         return 'Error'
 
 
@@ -54,21 +54,17 @@ def get_default_prompt(method=None):
 
 
 def set_assistant_instructions(instructions):
-    client = OpenAI(api_key=st.session_state.openai_api_key)
-    my_updated_assistant = client.beta.assistants.update(
-        st.session_state.openai_assistant_id,
-        instructions=instructions
-    )
-    st.toast("Assistant updated successfully!")
+    """Store instructions locally. No longer pushes to a remote assistant."""
+    set_current_prompt(instructions)
+    st.toast("Instructions updated successfully!")
 
 
 def get_assistant_instructions():
     try:
-        assistant = get_assistant()
-        instructions = assistant.instructions
+        instructions = get_current_prompt()
         return instructions
     except Exception as e:
         logging.error(f"Error getting assistant instructions: {e}")
         st.error(
-            "Error getting assistant instructions. Please check your OpenAI API key and Assistant ID.")
+            "Error getting assistant instructions. Please check your Anthropic API key.")
         return 'Error'

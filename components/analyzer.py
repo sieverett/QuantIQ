@@ -3,7 +3,7 @@
 import os
 import streamlit as st
 from utils.file_handler import handle_file_upload
-from openai import OpenAI
+from anthropic import Anthropic
 from quantiq import quantiq__ as qiq
 import logging
 
@@ -25,7 +25,7 @@ def render_analyzer():
         )
         if st.session_state.authenticated_flag == False:
             st.warning(
-                "Set your OpenAI API key and Assistant ID in Settings to proceed."
+                "Set your Anthropic API key in Settings to proceed."
             )
             st.stop()
 
@@ -49,7 +49,7 @@ def render_analyzer():
             ]
             num_files = len(files_to_process)
             with st.spinner("Analyzing..."):
-                client = OpenAI(api_key=st.session_state.openai_api_key)
+                client = Anthropic(api_key=st.session_state.anthropic_api_key)
                 qiq.process_bulk_directory(client)
             st.session_state.bulk_file_uploaded = False
             st.session_state["files"] = []

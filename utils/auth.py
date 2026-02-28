@@ -2,22 +2,28 @@
 
 import streamlit as st
 import os
-from openai import OpenAI
+from anthropic import Anthropic
 
 
 def get_assistant():
+    """Validate the Anthropic API key by making a test request."""
     try:
-        client = OpenAI(api_key=st.session_state.openai_api_key)
-        client.beta.assistants.retrieve(st.session_state.openai_assistant_id)
+        client = Anthropic(api_key=st.session_state.anthropic_api_key)
+        # Validate key with a minimal request
+        client.messages.create(
+            model="claude-sonnet-4-20250514",
+            max_tokens=10,
+            messages=[{"role": "user", "content": "ping"}],
+        )
         st.session_state.authenticated_flag = True
     except Exception:
-        st.warning("Check your API key and/or Assistant ID.")
+        st.warning("Check your API key.")
         st.session_state.authenticated_flag = False
 
 
 def get_client():
     try:
-        client = OpenAI(api_key=st.session_state.openai_api_key)
+        client = Anthropic(api_key=st.session_state.anthropic_api_key)
         st.session_state.authenticated_flag = True
     except Exception:
         st.warning("Set your API key.")

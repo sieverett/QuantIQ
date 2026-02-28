@@ -293,7 +293,7 @@ def output_report(client, message_content, filename, mode="On"):
     Generates and outputs the report based on analysis.
 
     Args:
-        client: OpenAI client instance.
+        client: Anthropic client instance.
         message_content (str): Content from the analysis.
         filename (str): Name of the output PDF file.
         mode (str): Assistant mode ("On" or "Off").
@@ -315,7 +315,7 @@ def output_report_(client, message_content, output_filename):
     Alternate report output function for assistant mode off.
 
     Args:
-        client: OpenAI client instance.
+        client: Anthropic client instance.
         message_content (str): Content from the analysis.
         output_filename (str): Name of the output PDF file.
     """

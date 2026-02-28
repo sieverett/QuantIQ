@@ -6,28 +6,16 @@ from utils.auth import store_keys
 
 def render_settings():
     """ """
-    st.text("API key \nand Assistant ID")
+    st.text("API key")
     api_key = st.text_input(
-        label="Enter your OpenAI API key",
-        placeholder="OpenAI API Key",
+        label="Enter your Anthropic API key",
+        placeholder="Anthropic API Key",
         type="password",
-        help="Go to [OpenAI API key](https://platform.openai.com/api-keys) for platform authentication.",
+        help="Go to [Anthropic API key](https://console.anthropic.com/settings/keys) for platform authentication.",
     )
     if api_key:
-        st.session_state.openai_api_key = api_key
+        st.session_state.anthropic_api_key = api_key
         st.session_state.key_set = True
-
-    if st.session_state.assistant_mode == "On":
-        assistant_key = st.text_input(
-            label="Enter your OpenAI Assistant ID",
-            placeholder="OpenAI Assistant ID",
-            type="password",
-            help="Go to [OpenAI Assistant ID](https://platform.openai.com/assistants/) create custom Assistant ID.",
-        )
-
-        if assistant_key:
-            st.session_state.openai_assistant_id = assistant_key
-            st.session_state.key_set = True
 
     # Save Keys Button
     if st.session_state.key_set:
@@ -39,8 +27,7 @@ def render_settings():
         ):
             store_keys(
                 params={
-                    "OPENAI_API_KEY": st.session_state.openai_api_key,
-                    "OPENAI_ASSISTANT_ID": st.session_state.openai_assistant_id,
+                    "ANTHROPIC_API_KEY": st.session_state.anthropic_api_key,
                 }
             )
             st.session_state.key_set = False

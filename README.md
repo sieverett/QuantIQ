@@ -4,18 +4,18 @@ A quantitative analysis tool for intelligent financial review.
 
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
-![OpenAI](https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white)
+![Anthropic](https://img.shields.io/badge/Anthropic-Claude-191919?style=for-the-badge&logo=anthropic&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 
 ## About
 
-QUANT-IQ analyzes financial statements using the OpenAI GPT API and presents results through a Streamlit web interface. Users upload financial documents in PDF, DOCX, or ZIP format, and the tool generates structured reports covering revenue growth, profitability, liquidity, and overall financial health. Reports are scored on a standardized rubric and exported as PDF.
+QUANT-IQ analyzes financial statements using the Anthropic Claude API and presents results through a Streamlit web interface. Users upload financial documents in PDF, DOCX, or ZIP format, and the tool generates structured reports covering revenue growth, profitability, liquidity, and overall financial health. Reports are scored on a standardized rubric and exported as PDF.
 
 ## Features
 
 - Upload and analyze financial documents in PDF, DOCX, CSV, XLSX, or ZIP format
 - Bulk processing of multiple documents, individually or grouped by directory
-- Two analysis modes: OpenAI Assistants API (file search) or Chat Completions (structured outputs)
+- Two analysis modes: standard analysis or prompt-customized analysis (structured outputs)
 - Editable analysis prompt with save, restore, and download support
 - Automated PDF report generation with styled HTML output
 - Downloadable ZIP archive of all analysis results
@@ -27,8 +27,7 @@ QUANT-IQ analyzes financial statements using the OpenAI GPT API and presents res
 ### Prerequisites
 
 - Python 3.10+
-- An [OpenAI API key](https://platform.openai.com/api-keys)
-- For Assistant mode: an [OpenAI Assistant ID](https://platform.openai.com/assistants/)
+- An [Anthropic API key](https://console.anthropic.com/settings/keys)
 - `wkhtmltopdf` or WeasyPrint system dependencies (used for HTML-to-PDF conversion)
 
 ### Installation
@@ -44,7 +43,7 @@ pip install -r requirements.txt
 Create a `.env` file in the project root:
 
 ```
-OPENAI_API_KEY=your_openai_api_key
+ANTHROPIC_API_KEY=your_anthropic_api_key
 ```
 
 Or set the key through the Settings page in the app after launch.
@@ -66,7 +65,7 @@ Then open `http://localhost:8501` in your browser.
 
 ## Usage
 
-1. Set your OpenAI API key (and optionally an Assistant ID) in the **Settings** tab.
+1. Set your Anthropic API key in the **Settings** tab.
 2. Upload financial documents through the **Analyze** tab.
 3. Click **Analyze** to generate reports.
 4. Download individual reports or a ZIP archive of all results.

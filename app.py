@@ -39,7 +39,7 @@ st.set_page_config(
             ## About QUANT-IQ
             **QUANT-IQ** is a powerful tool designed to streamline the analysis of financial statements using AI.
             With a user-friendly interface, the app supports document uploads in PDF, DOCX, and ZIP formats, and
-            leverages OpenAI's GPT to generate insightful reports. Whether for individual documents or bulk processing,
+            leverages Anthropic's Claude to generate insightful reports. Whether for individual documents or bulk processing,
             QUANT-IQ simplifies financial analysis for both professionals and organizations.
 
             **Author**: Silas Everett
@@ -68,8 +68,7 @@ defaults = {
     "reset_clicked": False,
     "uploaded_files": [],
     "bulk_output_dir": "bulk_output",
-    "openai_api_key": os.getenv("OPENAI_API_KEY", ""),
-    "openai_assistant_id": os.getenv("OPENAI_ASSISTANT_ID", ""),
+    "anthropic_api_key": os.getenv("ANTHROPIC_API_KEY", ""),
     "authenticated_flag": False,
     "key_set": True,
     "editor_content": pu.get_default_prompt(

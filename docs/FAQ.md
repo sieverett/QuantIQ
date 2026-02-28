@@ -5,9 +5,9 @@
 ## Common Issues and Troubleshooting Tips
 
 ### 1. Issue: "API key not found"
-**Solution**: Ensure you have set your OpenAI API key in the `.env` file:
+**Solution**: Ensure you have set your Anthropic API key in the `.env` file:
 ```bash
-OPENAI_API_KEY=your_openai_api_key
+ANTHROPIC_API_KEY=your_anthropic_api_key
 ```
 
 ### 2. Issue: File upload errors
@@ -36,7 +36,7 @@ Ensure the ZIP file:
 - Does not exceed the maximum upload size specified in the app settings.
 
 ### Q: How is the data in my files processed?
-Once your files are uploaded, QUANT-IQ uses **OpenAI GPT** to analyze the content of the documents. The analysis is handled locally, and the data is never shared with third parties unless specified in your OpenAI API settings.
+Once your files are uploaded, QUANT-IQ uses **Anthropic Claude** to analyze the content of the documents. The analysis is handled locally, and the data is never shared with third parties unless specified in your Anthropic API settings.
 
 ### Q: What should I do if my analysis takes too long?
 If your analysis is taking a long time, it could be due to:
@@ -50,7 +50,7 @@ You can try reducing the size of the files or breaking up the documents into sma
 After the analysis is completed, you can download a PDF report by clicking the **Download** button in the app. If you've uploaded multiple files, the reports will be zipped into a single archive for download.
 
 ### Q: What should I do if I encounter errors during analysis?
-- **API issues**: Ensure your OpenAI API key is set properly in the `.env` file.
+- **API issues**: Ensure your Anthropic API key is set properly in the `.env` file.
 - **File format errors**: Make sure the files you're uploading are in the supported formats (PDF, DOCX, or ZIP).
 - **App crashes**: Check the console logs for error messages, and verify your environment variables and configurations.
 
@@ -68,24 +68,24 @@ For additional support, please raise an issue on [GitHub](https://github.com/you
 
 ## Privacy and Data Security
 
-At **QUANT-IQ**, we take the privacy and security of your data seriously. Below are some important details on how your data is handled within the application and how OpenAI's policies affect your usage:
+At **QUANT-IQ**, we take the privacy and security of your data seriously. Below are some important details on how your data is handled within the application and how Anthropic's policies affect your usage:
 
 ### How We Handle Your Data
-- **File Processing**: The files you upload (PDF, DOCX, or ZIP) are processed locally on your system and analyzed using the OpenAI API. The contents of your documents are not stored permanently in the system.
+- **File Processing**: The files you upload (PDF, DOCX, or ZIP) are processed locally on your system and analyzed using the Anthropic API. The contents of your documents are not stored permanently in the system.
 - **Temporary Storage**: Uploaded files and the resulting reports are stored temporarily to facilitate analysis. These files are deleted once the analysis is complete, or if you reset the app.
 - **Generated Reports**: Any reports generated from the analysis of your financial statements are stored temporarily within the app and are available for download. Once you download the report, you are responsible for its storage.
 
-### OpenAI's Privacy Policy
-Since **OpenAI GPT** is used for document analysis, OpenAI's data handling and privacy policies also apply. Here are the key points:
-- **Data Usage**: OpenAI processes the input provided (in this case, the financial statements you upload) to generate a response. OpenAI retains the right to use the data for model improvement unless explicitly stated otherwise through the API settings.
-- **Data Retention**: OpenAI retains your data for up to 30 days to monitor for abuse and misuse. You can request the deletion of any data associated with your API key by contacting OpenAI support.
-- **Data Confidentiality**: OpenAI does not share your data with third parties. However, OpenAI may store metadata (e.g., file size, types) to monitor and improve its systems.
+### Anthropic's Privacy Policy
+Since **Anthropic Claude** is used for document analysis, Anthropic's data handling and privacy policies also apply. Here are the key points:
+- **Data Usage**: Anthropic processes the input provided (in this case, the financial statements you upload) to generate a response. Anthropic retains the right to use the data for model improvement unless explicitly stated otherwise through the API settings.
+- **Data Retention**: Anthropic retains your data for up to 30 days to monitor for abuse and misuse. You can request the deletion of any data associated with your API key by contacting Anthropic support.
+- **Data Confidentiality**: Anthropic does not share your data with third parties. However, Anthropic may store metadata (e.g., file size, types) to monitor and improve its systems.
 
-You can read more about OpenAI's privacy policy [here](https://openai.com/policies/privacy-policy).
+You can read more about Anthropic's privacy policy [here](https://anthropic.com/privacy).
 
 ### Tips for Protecting Your Data
-- **Environment Variables**: Make sure to keep your OpenAI API key secure by storing it in environment variables (`.env` file) and never sharing it publicly.
-- **Sensitive Data**: Avoid uploading highly sensitive or personal data to the system, as OpenAI processes the data you send via the API.
+- **Environment Variables**: Make sure to keep your Anthropic API key secure by storing it in environment variables (`.env` file) and never sharing it publicly.
+- **Sensitive Data**: Avoid uploading highly sensitive or personal data to the system, as Anthropic processes the data you send via the API.
 - **Session Reset**: Use the reset function provided in the app to clear all data and remove uploaded files after you are done analyzing your documents.
 
 ### Compliance with Privacy Regulations
