@@ -60,9 +60,7 @@ def render_logo():
             <img src="data:image/png;base64,{encoded_image}" alt="Logo" style="cursor: pointer; width: 95px; height: 95px;">
         </a>
     """
-    st.markdown(
-        clickable_image_html, unsafe_allow_html=True, help="Click logo to change"
-    )
+    st.markdown(clickable_image_html, unsafe_allow_html=True)
 
     # Handle logo update
     if st.query_params.get("logo_clicked") == "true":

@@ -31,7 +31,7 @@ def quantiq_analysis(client, file_paths, report_name):
         prompt_instructions = st.session_state.get("editor_content", "")
 
         response = client.messages.create(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-6",
             max_tokens=4096,
             system=prompt_instructions if prompt_instructions else "You are a financial analyst. Prepare comprehensive reports based on the provided financial documents.",
             messages=[
@@ -71,7 +71,7 @@ def quantiq_analysis_(client, file_paths, report_name):
         report_data = ingest_files(file_paths)
 
         response = client.messages.create(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-6",
             max_tokens=4096,
             system=prompt_instructions,
             messages=[

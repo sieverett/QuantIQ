@@ -3,7 +3,6 @@
 import os
 import logging
 import streamlit as st
-from weasyprint import HTML
 from markdown_pdf import MarkdownPdf, Section
 from bs4 import BeautifulSoup
 import re
@@ -163,6 +162,7 @@ def html_to_pdf(html_content, filename, output_dir):
             raise ValueError("Styled HTML content is None. Skipping PDF generation.")
 
         save_path = os.path.join(output_dir, filename)
+        from weasyprint import HTML
         HTML(string=string).write_pdf(save_path)
         logger.info(f"PDF generated and saved at {save_path}.")
     except Exception as e:
@@ -302,6 +302,7 @@ def output_report(client, message_content, filename, output_dir=None):
         if styled_html is None:
             raise ValueError("Styled HTML content is None.")
         save_path = os.path.join(output_dir, filename)
+        from weasyprint import HTML
         HTML(string=styled_html).write_pdf(save_path)
         logger.info(f"Report {filename} generated successfully.")
         st.toast(f"{filename} Completed!")

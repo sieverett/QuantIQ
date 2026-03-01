@@ -54,7 +54,7 @@ def run_dcf_analysis(client):
     ]
 
     response_1 = client.messages.create(
-        model="claude-sonnet-4-20250514",
+        model="claude-sonnet-4-6",
         max_tokens=4096,
         system=extraction_prompt,
         messages=messages,
@@ -73,7 +73,7 @@ def run_dcf_analysis(client):
     })
 
     response_2 = client.messages.create(
-        model="claude-sonnet-4-20250514",
+        model="claude-sonnet-4-6",
         max_tokens=8192,
         system=dcf_model_prompt,
         messages=messages,

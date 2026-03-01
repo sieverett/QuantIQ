@@ -11,7 +11,7 @@ def get_assistant():
         client = Anthropic(api_key=st.session_state.anthropic_api_key)
         # Validate key with a minimal request
         client.messages.create(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-6",
             max_tokens=10,
             messages=[{"role": "user", "content": "ping"}],
         )

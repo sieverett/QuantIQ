@@ -64,7 +64,7 @@ def run_comparative_analysis(client):
         companies_block += f"\n\n--- {company} ---\n{analysis}"
 
     response = client.messages.create(
-        model="claude-sonnet-4-20250514",
+        model="claude-sonnet-4-6",
         max_tokens=8192,
         system=comparative_prompt,
         messages=[

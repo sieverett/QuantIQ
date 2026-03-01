@@ -25,7 +25,19 @@ def render_sidebar():
                 index=["Standard", "Comparative", "DCF Valuation"].index(
                     st.session_state.get("analysis_mode", "Standard")
                 ),
-                help="Standard: single-company scoring. Comparative: multi-company side-by-side. DCF Valuation: discounted cash flow model.",
+                help=(
+                    "**Standard** — Analyzes each company individually. "
+                    "Scores revenue growth, profitability, and liquidity on a 1-5 scale. "
+                    "Upload a .zip with one or more company folders, or individual PDF/DOCX files.\n\n"
+                    "**Comparative** — Side-by-side analysis of 2+ companies. "
+                    "Produces a metrics comparison table, rankings across dimensions, "
+                    "and per-company strengths/weaknesses. "
+                    "Upload a .zip containing a subfolder per company.\n\n"
+                    "**DCF Valuation** — Builds a discounted cash flow model for a single company. "
+                    "Extracts financials from your documents, calculates WACC, "
+                    "projects 5-year free cash flow, estimates enterprise and equity value, "
+                    "and runs a sensitivity analysis. Upload financial statements for one company."
+                ),
             )
 
     return selected
