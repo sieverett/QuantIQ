@@ -42,7 +42,7 @@ def reset_run():
         delete_dir_contents(directories)
         st.session_state.bulk_file_uploaded = False
         st.session_state.reset_clicked = True
-        st.experimental_rerun()
+        st.rerun()
         logger.info("Application run reset successfully.")
     except Exception as e:
         logger.error(f"Error in reset_run function: {e}")

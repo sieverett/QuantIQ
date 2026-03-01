@@ -8,7 +8,7 @@ from markdown_pdf import MarkdownPdf, Section
 from bs4 import BeautifulSoup
 import re
 from quantiq.logging_setup import set_logging
-from quantiq.file_handler import read_xlsx
+
 
 # Initialize logger
 logger = set_logging()
@@ -101,6 +101,12 @@ def add_style(html_content):
                 table, th, td {
                     border: 1px solid black;
                     border-radius: 10px;
+                }
+                .page-break {
+                    page-break-before: always;
+                }
+                table {
+                    font-size: 11px;
                 }
             </style>
         """
@@ -288,42 +294,16 @@ def fetch_template(template_path="template.html"):
         return None
 
 
-def output_report(client, message_content, filename, mode="On"):
-    """
-    Generates and outputs the report based on analysis.
-
-    Args:
-        client: Anthropic client instance.
-        message_content (str): Content from the analysis.
-        filename (str): Name of the output PDF file.
-        mode (str): Assistant mode ("On" or "Off").
-    """
+def output_report(client, message_content, filename, output_dir=None):
     try:
+        if output_dir is None:
+            output_dir = st.session_state.bulk_output_dir
         styled_html = add_style(message_content)
-        if mode == "On":
-            output_report(client, message_content, filename)
-        else:
-            output_report_(client, message_content, filename)
+        if styled_html is None:
+            raise ValueError("Styled HTML content is None.")
+        save_path = os.path.join(output_dir, filename)
+        HTML(string=styled_html).write_pdf(save_path)
         logger.info(f"Report {filename} generated successfully.")
         st.toast(f"{filename} Completed!")
     except Exception as e:
         logger.error(f"Error in output_report function: {e}")
-
-
-def output_report_(client, message_content, output_filename):
-    """
-    Alternate report output function for assistant mode off.
-
-    Args:
-        client: Anthropic client instance.
-        message_content (str): Content from the analysis.
-        output_filename (str): Name of the output PDF file.
-    """
-    try:
-        styled_html = add_style_(message_content)
-        html_to_pdf_(styled_html, output_filename)
-        logger.info(
-            f"Report {output_filename} generated successfully in assistant mode Off."
-        )
-    except Exception as e:
-        logger.error(f"Error in output_report_ function: {e}")

@@ -7,21 +7,9 @@ from components.sidebar import render_sidebar
 from components.analyzer import render_analyzer
 from components.prompt_editor import render_prompt_editor
 from components.settings import render_settings
-from quantiq import (
-    set_logging,
-    quantiq_analysis,
-    quantiq_analysis_,
-    output_report,
-    output_report_,
-    download_zip_file,
-    reset_run,
-    feedback,
-)
 from quantiq.logo_manager import render_logo
 from quantiq.download_manager import download_file
 from quantiq import prompt_utils as pu
-
-# Import custom modules
 from quantiq.logging_setup import set_logging
 
 # Set logging
@@ -71,16 +59,12 @@ defaults = {
     "anthropic_api_key": os.getenv("ANTHROPIC_API_KEY", ""),
     "authenticated_flag": False,
     "key_set": True,
-    "editor_content": pu.get_default_prompt(
-        "prompts/default_prompt.txt"
-    ),  # Initialize as empty; will be set in prompt editor
-    "default_prompt": pu.get_default_prompt(
-        "prompts/default_prompt.txt"
-    ),  # Initialize as empty; will be loaded from prompts/default_prompt.txt
+    "editor_content": pu.get_default_prompt("prompts/default_prompt.txt"),
+    "default_prompt": pu.get_default_prompt("prompts/default_prompt.txt"),
     "assistant_instructions": "",
     "current_logo": "quantiq_logo_75x75.jpg",
     "logo_clicked": None,
-    "assistant_mode": "Off",
+    "analysis_mode": "Standard",
 }
 
 initialize_session_state(defaults)

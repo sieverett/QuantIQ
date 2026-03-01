@@ -1,0 +1,91 @@
+You are a financial analyst building a Discounted Cash Flow (DCF) valuation model. Using the financial data previously extracted, construct a complete DCF analysis.
+
+Present your analysis as valid HTML with the following sections:
+
+1. Assumptions & WACC Calculation
+<h2>WACC Calculation</h2>
+<table border="1">
+  <tr><td>Risk-Free Rate</td><td>[value and source]</td></tr>
+  <tr><td>Equity Risk Premium</td><td>[value]</td></tr>
+  <tr><td>Beta</td><td>[value, state if assumed for private company]</td></tr>
+  <tr><td>Cost of Equity</td><td>[calculated]</td></tr>
+  <tr><td>Cost of Debt (pre-tax)</td><td>[value]</td></tr>
+  <tr><td>Tax Rate</td><td>[from extracted data]</td></tr>
+  <tr><td>Cost of Debt (after-tax)</td><td>[calculated]</td></tr>
+  <tr><td>Debt Weight</td><td>[from balance sheet]</td></tr>
+  <tr><td>Equity Weight</td><td>[from balance sheet]</td></tr>
+  <tr><td><strong>WACC</strong></td><td><strong>[calculated]</strong></td></tr>
+</table>
+
+State all assumptions explicitly. For private companies, explain the beta assumption.
+
+2. Projected Free Cash Flow (5 Years)
+<h2>Projected Free Cash Flow</h2>
+<table border="1">
+  <thead>
+    <tr><th>Item</th><th>Year 1</th><th>Year 2</th><th>Year 3</th><th>Year 4</th><th>Year 5</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Revenue</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>Revenue Growth Rate</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>EBITDA</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>EBITDA Margin</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>Less: D&A</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>EBIT</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>Less: Taxes</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>NOPAT</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>Plus: D&A</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>Less: CapEx</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>Less: Change in Working Capital</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td><strong>Free Cash Flow</strong></td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>Discount Factor</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>PV of FCF</td><td></td><td></td><td></td><td></td><td></td></tr>
+  </tbody>
+</table>
+
+Base projections on historical trends from the extracted data. State growth assumptions.
+
+3. Terminal Value (Gordon Growth Model)
+<h2>Terminal Value</h2>
+<table border="1">
+  <tr><td>Terminal Growth Rate</td><td>[value, typically 2-3%]</td></tr>
+  <tr><td>Terminal Year FCF</td><td>[Year 5 FCF]</td></tr>
+  <tr><td>Terminal Value</td><td>[FCF * (1+g) / (WACC - g)]</td></tr>
+  <tr><td>PV of Terminal Value</td><td>[discounted back]</td></tr>
+</table>
+
+4. Valuation Summary
+<h2>Valuation Summary</h2>
+<table border="1">
+  <tr><td>Sum of PV of FCFs</td><td>[value]</td></tr>
+  <tr><td>PV of Terminal Value</td><td>[value]</td></tr>
+  <tr><td><strong>Enterprise Value</strong></td><td><strong>[value]</strong></td></tr>
+  <tr><td>Less: Total Debt</td><td>[value]</td></tr>
+  <tr><td>Plus: Cash</td><td>[value]</td></tr>
+  <tr><td><strong>Equity Value</strong></td><td><strong>[value]</strong></td></tr>
+  <tr><td>Shares Outstanding</td><td>[value]</td></tr>
+  <tr><td><strong>Implied Price Per Share</strong></td><td><strong>[value]</strong></td></tr>
+</table>
+
+5. Sensitivity Analysis
+<h2>Sensitivity Analysis — Implied Share Price</h2>
+Create a matrix table with WACC on one axis and terminal growth rate on the other:
+- WACC range: base WACC +/- 2% in 0.5% increments
+- Terminal growth: 1% to 4% in 0.5% increments
+- Highlight the base case cell
+
+6. Key Risks and Limitations
+<h2>Key Risks and Limitations</h2>
+<ul>
+  <li>[Risk 1 with brief explanation]</li>
+  <li>[Risk 2]</li>
+  <li>[Risk 3]</li>
+  <li>[Data limitation notes]</li>
+</ul>
+
+Important:
+- Output only valid HTML. Do not include markdown code fences or commentary outside the HTML.
+- Show all calculations step by step.
+- Use actual numbers from the extracted financial data.
+- All tables must use border="1".
+- If data is insufficient for a reliable DCF, state this clearly and note which assumptions are particularly uncertain.

@@ -6,6 +6,7 @@ import streamlit as st
 from PIL import Image
 from io import BytesIO
 import base64
+import shutil
 from quantiq.logging_setup import set_logging
 
 # Initialize logger
@@ -75,7 +76,7 @@ def render_logo():
                 with open(save_path, "wb") as f:
                     f.write(uploaded_file.getbuffer())
                 st.session_state["logo_clicked"] = False
-                st.experimental_rerun()
+                st.rerun()
                 logger.info(f"Logo updated to {st.session_state['current_logo']}.")
             except Exception as e:
                 st.error(f"Error saving the new logo: {e}")
@@ -90,7 +91,7 @@ def render_logo():
             try:
                 shutil.copy(source_path, dest_path)
                 st.session_state["current_logo"] = default_logo
-                st.experimental_rerun()
+                st.rerun()
                 logger.info("Logo reset to default.")
             except Exception as e:
                 st.error(f"Error resetting the logo: {e}")

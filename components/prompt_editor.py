@@ -47,7 +47,7 @@ def render_prompt_editor():
     update_success = st.empty()
 
     if selected2 == "Save":
-        if st.session_state.assistant_mode == "On":
+        if st.session_state.get("analysis_mode", "Standard") != "Standard":
             if (
                 st.session_state.assistant_instructions
                 != st.session_state.editor_content + pu.get_output_format()
@@ -80,7 +80,7 @@ def render_prompt_editor():
             st.session_state.editor_content = st.session_state.default_prompt
             pu.set_current_prompt(st.session_state.default_prompt)
 
-            if st.session_state.assistant_mode == "On":
+            if st.session_state.get("analysis_mode", "Standard") != "Standard":
                 pu.set_assistant_instructions(
                     instructions=st.session_state.default_prompt
                     + pu.get_output_format()

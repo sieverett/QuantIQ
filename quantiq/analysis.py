@@ -4,7 +4,7 @@ import os
 import logging
 import streamlit as st
 from anthropic import Anthropic
-from quantiq.reporting import output_report, output_report_
+from quantiq.reporting import output_report
 from quantiq.file_handler import ingest_files
 from quantiq.logging_setup import set_logging
 

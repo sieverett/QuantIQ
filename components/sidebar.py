@@ -2,20 +2,14 @@
 
 import streamlit as st
 from streamlit_option_menu import option_menu
-from utils.auth import get_assistant, get_client
-from quantiq import quantiq__ as qiq
+from quantiq.logo_manager import render_logo
 
 
 def render_sidebar():
-    """
-    Renders the sidebar with the main menu and settings.
-    """
     with st.sidebar:
-        # Title and Logo
-        qiq.handle_logo()
+        render_logo()
         st.title("QUANT-IQ")
 
-        # Main Menu
         selected = option_menu(
             "Main Menu",
             ["Analyze", "Prompt", "Settings"],
@@ -24,19 +18,14 @@ def render_sidebar():
             default_index=0,
         )
 
-        # Assistant Mode Toggle
-        with st.expander("Mode"):
-            st.session_state.assistant_mode = st.radio(
-                "Assistant Mode",
-                ["On", "Off"],
-                index=1,
-                help="On uses AI Assistant or off use Completions.",
+        with st.expander("Analysis Mode"):
+            st.session_state.analysis_mode = st.radio(
+                "Mode",
+                ["Standard", "Comparative", "DCF Valuation"],
+                index=["Standard", "Comparative", "DCF Valuation"].index(
+                    st.session_state.get("analysis_mode", "Standard")
+                ),
+                help="Standard: single-company scoring. Comparative: multi-company side-by-side. DCF Valuation: discounted cash flow model.",
             )
-
-            # Authenticate based on mode
-            if st.session_state.assistant_mode == "On":
-                get_assistant()
-            else:
-                get_client()
 
     return selected
